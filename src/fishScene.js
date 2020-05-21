@@ -286,19 +286,7 @@ class FishScene extends Phaser.Scene {
         newPlayerFish.maxScale = 5;
 
         return newPlayerFish;
-    }
-
-    updateAIFish(fish, predator, delta) {
-        var predatorDistance = this.findDistance(fish.x, fish.y, predator.x, predator.y);
-        if (predatorDistance <= fish.fleeDistance) {
-            var fishFleeVector = this.findDirection(fish.x, fish.y, predator.x, predator.y);
-            fishFleeVector.x *= -1;
-            fishFleeVector.y *= -1;
-
-            fish.x += fishFleeVector.x * fish.moveSpeed * delta;
-            fish.y += fishFleeVector.y * fish.moveSpeed * delta;
-        }
-    }
+    }    
 
     updateAIFish(fish, worms, delta) {
         var desiredVelocity = new Phaser.Math.Vector2();
