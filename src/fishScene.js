@@ -77,7 +77,7 @@ class FishScene extends Phaser.Scene {
         this.updatePlayerFish(this.playerFish, delta);
 
         for (var i = 0; i < this.littleFishes.length; i++) {
-            this.newUpdateAIFish(this.littleFishes[i], this.worms, delta);
+            this.updateAIFish(this.littleFishes[i], this.worms, delta);
         }
 
         if (this.wormSpawnTimer >= this.wormSpawnDelay) {
@@ -85,7 +85,7 @@ class FishScene extends Phaser.Scene {
 
             var randX = 0;
             var randY = 0;
-            for (var i = 0; i < 1; i++) {
+            for (var i = 0; i < 4; i++) {
                 randX = Phaser.Math.Between(-window.innerWidth, window.innerWidth);
                 randY = Phaser.Math.Between(-window.innerHeight, window.innerHeight);
                 var theWorm = this.add.image(randX, randY, "worm");
@@ -249,7 +249,7 @@ class FishScene extends Phaser.Scene {
     createYellowFish(x, y) {
         var yellowFish = this.createAIFish(x, y, "yellowFish");
         yellowFish.moveSpeed = 0.3;
-        yellowFish.setScale(0.75);
+        yellowFish.setScale(0.5);
         yellowFish.maxScale = 3;
         yellowFish.spawnAmount = 10;
         yellowFish.fishType = FishTypes.YELLOW;
@@ -300,7 +300,7 @@ class FishScene extends Phaser.Scene {
         }
     }
 
-    newUpdateAIFish(fish, worms, delta) {
+    updateAIFish(fish, worms, delta) {
         var desiredVelocity = new Phaser.Math.Vector2();
 
         var fleeVector = this.findFleeVector(fish, this.findPredators(fish, this.playerFish, this.littleFishes));
@@ -345,7 +345,7 @@ class FishScene extends Phaser.Scene {
                 fish.flipX = false;
             }
             //add division to speed bonus to make bigger fish slower, divide by scale
-            var scaleSpeedBonus = 1;
+            var scaleSpeedBonus = 1/ fish.scale;
             var speed = fish.moveSpeed * scaleSpeedBonus;
             fish.x += desiredVelocity.x * speed * delta;
             fish.y += desiredVelocity.y * speed * delta;
@@ -505,7 +505,7 @@ class FishScene extends Phaser.Scene {
         var foodSources = [];
         foodSources = foodSources.concat(worms);
         if (this.fishIsBigger(fish, playerFish)) {
-            //foodSources.push(playerFish);
+            foodSources.push(playerFish);
         }
         for (var i = 0; i < fishes.length; i++) {
             var theFish = fishes[i];
