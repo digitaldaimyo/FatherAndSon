@@ -21,7 +21,7 @@ class FishScene extends Phaser.Scene {
         this.load.image("worm", "assets/wormSmall.png");
         this.load.image("background", "assets/background.jpg");
         this.load.image("tileSet", "assets/fishTilesheet.png");
-        //this.load.tilemapTiledJSON("environmentMap", "assets/tiledMap.json");
+        this.load.tilemapTiledJSON("environmentMap", "assets/underWaterMap.json");
     }
 
     create() {
@@ -34,9 +34,9 @@ class FishScene extends Phaser.Scene {
         this.background.displayHeight = 10000;
         //this.background.setOrigin(0);
 
-        //const map = this.make.tilemap({ key: 'environmentMap' });
-        //const tileSet = map.addTilesetImage('underwaterTest', 'tileSet');
-        //const backgoundTiles = map.createStaticLayer('backgroundLayer', tileSet, 0, 0);
+        const map = this.make.tilemap({ key: 'environmentMap' });
+        const tileSet = map.addTilesetImage('underwaterTest', 'tileSet');
+        const backgoundTiles = map.createStaticLayer('backgroundLayer', tileSet, 0, 0);
 
         this.playerFish = this.createPlayerFish(0, 0);
         this.cameras.main.startFollow(this.playerFish);
@@ -83,7 +83,7 @@ class FishScene extends Phaser.Scene {
         }
 
         this.wormSpawnTimer = 0;
-        this.wormSpawnDelay = 250;
+        this.wormSpawnDelay = 3000;
         this.worms = [];
 
     }
