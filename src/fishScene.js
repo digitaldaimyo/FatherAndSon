@@ -21,7 +21,7 @@ class FishScene extends Phaser.Scene {
         this.load.image("worm", "assets/wormSmall.png");
         this.load.image("background", "assets/background.jpg");
         this.load.image("tileSet", "assets/fishTilesheet.png");
-        this.load.tilemapTiledJSON("environmentMap", "assets/tiledMap.json");
+        //this.load.tilemapTiledJSON("environmentMap", "assets/tiledMap.json");
     }
 
     create() {
