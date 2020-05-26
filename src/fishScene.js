@@ -20,6 +20,8 @@ class FishScene extends Phaser.Scene {
         this.load.image("purpleFish", "assets/purpleFish.png");
         this.load.image("worm", "assets/wormSmall.png");
         this.load.image("background", "assets/background.jpg");
+        this.load.image("tileSet", "assets/fishTilesheet.png");
+        this.load.tilemapTiledJSON("environmentMap", "assets/tiledMap.json");
     }
 
     create() {
@@ -32,11 +34,24 @@ class FishScene extends Phaser.Scene {
         this.background.displayHeight = 10000;
         //this.background.setOrigin(0);
 
+        //const map = this.make.tilemap({ key: 'environmentMap' });
+        //const tileSet = map.addTilesetImage('underwaterTest', 'tileSet');
+        //const backgoundTiles = map.createStaticLayer('backgroundLayer', tileSet, 0, 0);
+
         this.playerFish = this.createPlayerFish(0, 0);
         this.cameras.main.startFollow(this.playerFish);
         this.cameras.main.zoom = 0.15;
 
         this.littleFishes = [];
+        //this.fishes = this.add.group()
+        this.maxFishes = 3000;
+        this.fishPool = [];
+        for(var i = 0; i < this.maxFishes; i++){
+            var tempFish = this.add.sprite(0, 0, "fish");
+            //tempFish.setActive(false);
+            tempFish.setVisible(false);
+            this.fishPool.push(tempFish);       
+        }
         
         for (var i = 0; i < 10; i++) {
             var randX = Phaser.Math.Between(0, window.innerWidth);
@@ -68,7 +83,7 @@ class FishScene extends Phaser.Scene {
         }
 
         this.wormSpawnTimer = 0;
-        this.wormSpawnDelay = 3000;
+        this.wormSpawnDelay = 250;
         this.worms = [];
 
     }
@@ -128,7 +143,8 @@ class FishScene extends Phaser.Scene {
             if (this.circleOverlap(this.playerFish.getBounds(), this.littleFishes[i].getBounds())) {
                 if (this.fishIsBigger(this.playerFish, this.littleFishes[i])) {
                     this.feedFish(this.playerFish);
-                    this.littleFishes[i].destroy();
+                    //this.littleFishes[i].destroy();
+                    this.recycleFish(this.littleFishes[i]);
                     this.littleFishes.splice(i, 1);
                 }
             }
@@ -152,7 +168,7 @@ class FishScene extends Phaser.Scene {
                     if (this.fishIsBigger(this.littleFishes[i], this.littleFishes[j])) {
                         if (this.circleOverlap(this.littleFishes[i].getBounds(), this.littleFishes[j].getBounds())) {
                             this.feedFish(this.littleFishes[i]);
-                            this.littleFishes[j].destroy();
+                            this.recycleFish(this.littleFishes[j]);
                             this.littleFishes.splice(j,1);
                         }
                     }
@@ -174,7 +190,7 @@ class FishScene extends Phaser.Scene {
             var fish = this.littleFishes[i];
             if(fish){
                 if (this.findDistanceSquared(0, 0, fish.x, fish.y) > Math.pow(3000, 2)) {
-                    fish.destroy();
+                    this.recycleFish(fish);
                     this.littleFishes.splice(i, 1);
                 }
             }else{
@@ -182,9 +198,30 @@ class FishScene extends Phaser.Scene {
             }
             
         }
+    }
 
-        console.log(this.littleFishes.length);
+    getPooledFish(){
+        if(this.fishPool.shift() != undefined){
+            var tempFish = this.fishPool.shift();
+            tempFish.setVisible(true);
+            //this.fishPool.splice(this.fishPool.indexOf(tempFish), 1);
+            return tempFish;
+        } else{
+            console.log("had to add to fish pool");
+            var tempFish = this.add.sprite(0, 0, "fish");
+            this.fishPool.push(tempFish);
+            this.littleFishes.push(tempFish);
+            return tempFish;
+        }
+        var tempFish = this.fishPool.shift();
+        console.log(this.fishPool.length);
+        tempFish.setVisible(true);
+        return tempFish;
+    }
 
+    recycleFish(fish){
+        fish.setVisible(false);
+        this.fishPool.push(fish);
     }
 
     onPointerDown(pointer) {
@@ -211,7 +248,11 @@ class FishScene extends Phaser.Scene {
 
     //FISH FACTORY FUNCTION AND HELPER METHOD
     createAIFish(x, y, textureString) {
-        var newFish = this.add.sprite(x, y, textureString);
+        var newFish = this.getPooledFish();
+        //var newFish = this.add.sprite(x, y, textureString);
+        newFish.setTexture(textureString);
+        newFish.x = x;
+        newFish.y = y;
         newFish.exp = 0;
         newFish.spawnPoint = new Phaser.Math.Vector2(x, y);
         newFish.tendToSpawnPointWeight = 0.9;
@@ -557,7 +598,8 @@ class FishScene extends Phaser.Scene {
                     this.littleFishes.push(newFish);                
                 }
                 var fishIndex = this.littleFishes.indexOf(fish);
-                fish.destroy();
+                fish.setVisible(false);
+                this.fishPool.push(fish);
                 this.littleFishes.splice(fishIndex, 1);
             }            
         }
