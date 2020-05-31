@@ -29,13 +29,13 @@ class FishScene extends Phaser.Scene {
         //register input events
         this.input.on("pointerdown", this.onPointerDown, this);
 
-        this.background = this.add.image(0, 0, "background");
-        this.background.displayWidth = 10000;
-        this.background.displayHeight = 10000;
+        //this.background = this.add.image(0, 0, "background");
+        //this.background.displayWidth = 10000;
+        //this.background.displayHeight = 10000;
         //this.background.setOrigin(0);
 
         const map = this.make.tilemap({ key: 'environmentMap' });
-        const tileSet = map.addTilesetImage('underwaterTest', 'tileSet');
+        const tileSet = map.addTilesetImage('goober', 'tileSet');
         const backgoundTiles = map.createStaticLayer('backgroundLayer', tileSet, 0, 0);
 
         this.playerFish = this.createPlayerFish(0, 0);
@@ -43,7 +43,6 @@ class FishScene extends Phaser.Scene {
         this.cameras.main.zoom = 0.15;
 
         this.littleFishes = [];
-        //this.fishes = this.add.group()
         this.maxFishes = 3000;
         this.fishPool = [];
         for(var i = 0; i < this.maxFishes; i++){
@@ -193,10 +192,7 @@ class FishScene extends Phaser.Scene {
                     this.recycleFish(fish);
                     this.littleFishes.splice(i, 1);
                 }
-            }else{
-                console.log("ghost fish detected");
-            }
-            
+            }            
         }
     }
 
@@ -213,10 +209,6 @@ class FishScene extends Phaser.Scene {
             this.littleFishes.push(tempFish);
             return tempFish;
         }
-        var tempFish = this.fishPool.shift();
-        console.log(this.fishPool.length);
-        tempFish.setVisible(true);
-        return tempFish;
     }
 
     recycleFish(fish){
@@ -258,7 +250,7 @@ class FishScene extends Phaser.Scene {
         newFish.tendToSpawnPointWeight = 0.9;
         newFish.moveSpeed = 0.15;
         newFish.fleeDistance = 150;
-        newFish.fleeWeight = 12;
+        newFish.fleeWeight = 15;
         newFish.feedDistance = 500;
         newFish.feedWeight = 8;
         newFish.alignmentDistance = 150;
@@ -266,11 +258,9 @@ class FishScene extends Phaser.Scene {
         newFish.cohesionDistance = 700;
         newFish.cohesionWeight = 2;
         newFish.seperationDistance = 10;
-        newFish.seperationWeight = 10;
+        newFish.seperationWeight = 50;
         newFish.otherTypeAvoidDistance = 150;
-        newFish.otherTypeAvoidWeight = 5;
-        newFish.otherSizeAvoidDistance = 150;
-        newFish.otherSizeAvoidWeight = 1.5;
+        newFish.otherTypeAvoidWeight = 7;
         newFish.setScale(1);
         newFish.maxScale = 6;
         newFish.spawnAmount = 3;
