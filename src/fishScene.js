@@ -29,18 +29,26 @@ class FishScene extends Phaser.Scene {
         //register input events
         this.input.on("pointerdown", this.onPointerDown, this);
 
-        //this.background = this.add.image(0, 0, "background");
-        //this.background.displayWidth = 10000;
-        //this.background.displayHeight = 10000;
+        this.background = this.add.image(3200, 0, "background");
+        this.background.displayWidth = 10000;
+        this.background.displayHeight = 10000;
         //this.background.setOrigin(0);
 
         const map = this.make.tilemap({ key: 'environmentMap' });
         const tileSet = map.addTilesetImage('goober', 'tileSet');
         const backgoundTiles = map.createStaticLayer('backgroundLayer', tileSet, 0, 0);
+        const obstacleTiles = map.createStaticLayer('obstacleLayer', tileSet, 0, 0);
+        const mapSpawns = map.getObjectLayer('spawnObjectLayer')['objects'];
+        this.spawnPoints = [];
 
-        this.playerFish = this.createPlayerFish(0, 0);
+        mapSpawns.forEach(spawnObject =>{
+            console.log('spawn found: '+ spawnObject.x/64);
+            this.spawnPoints.push(spawnObject);
+        });
+
+        this.playerFish = this.createPlayerFish(3200, 0);
         this.cameras.main.startFollow(this.playerFish);
-        this.cameras.main.zoom = 0.15;
+        this.cameras.main.zoom = 0.1;
 
         this.littleFishes = [];
         this.maxFishes = 3000;
@@ -52,37 +60,37 @@ class FishScene extends Phaser.Scene {
             this.fishPool.push(tempFish);       
         }
         
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 50; i++) {
             var randX = Phaser.Math.Between(0, window.innerWidth);
             var randY = Phaser.Math.Between(0, window.innerHeight);
-            var newFish = this.createBlueFish(randX, randY);
+            var newFish = this.createBlueFish(this.spawnPoints[0].x, this.spawnPoints[0].y);
             this.littleFishes.push(newFish);
         }
         
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 50; i++) {
             var randX = Phaser.Math.Between(0, window.innerWidth);
             var randY = Phaser.Math.Between(0, window.innerHeight);
-            var newFish = this.createYellowFish(randX, randY);
+            var newFish = this.createYellowFish(this.spawnPoints[1].x, this.spawnPoints[1].y);
             this.littleFishes.push(newFish);
         }
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 50; i++) {
             var randX = Phaser.Math.Between(0, window.innerWidth);
             var randY = Phaser.Math.Between(0, window.innerHeight);
-            var newFish = this.createStripeFish(randX, randY);
+            var newFish = this.createStripeFish(this.spawnPoints[2].x, this.spawnPoints[2].y);
             this.littleFishes.push(newFish);
         }
 
-        for (var i = 0; i < 10; i++) {
+        for (var i = 0; i < 50; i++) {
             var randX = Phaser.Math.Between(0, window.innerWidth);
             var randY = Phaser.Math.Between(0, window.innerHeight);
-            var newFish = this.createGreenFish(randX, randY);
+            var newFish = this.createGreenFish(this.spawnPoints[3].x, this.spawnPoints[3].y);
             this.littleFishes.push(newFish);
         }
 
         this.wormSpawnTimer = 0;
-        this.wormSpawnDelay = 3000;
+        this.wormSpawnDelay = 5000;
         this.worms = [];
 
     }
@@ -99,40 +107,41 @@ class FishScene extends Phaser.Scene {
 
             var randX = 0;
             var randY = 0;
-            for (var i = 0; i < 4; i++) {
-                randX = Phaser.Math.Between(-window.innerWidth, window.innerWidth);
-                randY = Phaser.Math.Between(-window.innerHeight, window.innerHeight);
+            for (var i = 0; i < 10; i++) {
+                randX = Phaser.Math.Between(0, 6400);
+                randY = Phaser.Math.Between(400, 600);
                 var theWorm = this.add.image(randX, randY, "worm");
                 theWorm.scale = 4;
                 this.worms.push(theWorm);
             }            
             
             this.wormSpawnTimer -= this.wormSpawnDelay;
-
+            /*
             for (var i = 0; i < 3; i++) {
                 randX = Phaser.Math.Between(0, window.innerWidth);
                 randY = Phaser.Math.Between(0, window.innerHeight);
-                var newFish = this.createBlueFish(randX, randY);
+                var newFish = this.createBlueFish(this.spawnPoints[0].x, this.spawnPoints[0].y);
                 this.littleFishes.push(newFish);
             }
             for (var i = 0; i < 10; i++) {
                 randX = Phaser.Math.Between(-window.innerWidth, 0);
                 randY = Phaser.Math.Between(-window.innerHeight, 0);
-                var newFish = this.createYellowFish(randX, randY);
+                var newFish = this.createYellowFish(this.spawnPoints[1].x, this.spawnPoints[1].y);
                 this.littleFishes.push(newFish);
             }
             for (var i = 0; i < 6; i++) {
                 randX = Phaser.Math.Between(0, window.innerWidth);
                 randY = Phaser.Math.Between(-window.innerHeight,0);
-                var newFish = this.createStripeFish(randX, randY);
+                var newFish = this.createStripeFish(this.spawnPoints[2].x, this.spawnPoints[2].y);
                 this.littleFishes.push(newFish);
             }
             for (var i = 0; i < 8; i++) {
                 randX = Phaser.Math.Between(-window.innerWidth, 0);
                 randY = Phaser.Math.Between(0, window.innerHeight);
-                var newFish = this.createGreenFish(randX, randY);
+                var newFish = this.createGreenFish(this.spawnPoints[3].x, this.spawnPoints[3].y);
                 this.littleFishes.push(newFish);
             }
+            */
         } else {
             this.wormSpawnTimer += delta;
         }
@@ -185,6 +194,7 @@ class FishScene extends Phaser.Scene {
         }
 
         //prune out fish that are too far away to matter
+        /*
         for (var i = 0; i < this.littleFishes.length; i++) {
             var fish = this.littleFishes[i];
             if(fish){
@@ -194,10 +204,11 @@ class FishScene extends Phaser.Scene {
                 }
             }            
         }
+        */
     }
 
     getPooledFish(){
-        if(this.fishPool.shift() != undefined){
+        if(this.fishPool.shift() !== undefined){
             var tempFish = this.fishPool.shift();
             tempFish.setVisible(true);
             //this.fishPool.splice(this.fishPool.indexOf(tempFish), 1);
@@ -247,18 +258,18 @@ class FishScene extends Phaser.Scene {
         newFish.y = y;
         newFish.exp = 0;
         newFish.spawnPoint = new Phaser.Math.Vector2(x, y);
-        newFish.tendToSpawnPointWeight = 0.9;
+        newFish.tendToSpawnPointWeight = 0.8;
         newFish.moveSpeed = 0.15;
         newFish.fleeDistance = 150;
         newFish.fleeWeight = 15;
-        newFish.feedDistance = 500;
+        newFish.feedDistance = 700;
         newFish.feedWeight = 8;
         newFish.alignmentDistance = 150;
         newFish.alignmentWeight = 2;
         newFish.cohesionDistance = 700;
         newFish.cohesionWeight = 2;
         newFish.seperationDistance = 10;
-        newFish.seperationWeight = 50;
+        newFish.seperationWeight = 12;
         newFish.otherTypeAvoidDistance = 150;
         newFish.otherTypeAvoidWeight = 7;
         newFish.setScale(1);
@@ -290,7 +301,7 @@ class FishScene extends Phaser.Scene {
     createGreenFish(x, y) {
         var greenFish = this.createAIFish(x, y, "greenFish");
         greenFish.moveSpeed = 0.25;
-        greenFish.setScale(0.75);
+        greenFish.setScale(0.6);
         greenFish.maxScale = 4;
         greenFish.spawnAmount = 6;
         greenFish.fishType = FishTypes.GREEN;
@@ -364,7 +375,7 @@ class FishScene extends Phaser.Scene {
                 fish.flipX = false;
             }
             //add division to speed bonus to make bigger fish slower, divide by scale
-            var scaleSpeedBonus = 1/ fish.scale;
+            var scaleSpeedBonus = 1;
             var speed = fish.moveSpeed * scaleSpeedBonus;
             fish.x += desiredVelocity.x * speed * delta;
             fish.y += desiredVelocity.y * speed * delta;
@@ -374,8 +385,9 @@ class FishScene extends Phaser.Scene {
     findNearestObject(object, collection) {
         var theDistance = Number.MAX_VALUE;
         var nearestObject;
+        var newDistanceSqr = 0;
         for (var i = 0; i < collection.length; i++) {
-            var newDistanceSqr = this.findDistanceSquared(object.x, object.y, collection[i].x, collection[i].y);
+            newDistanceSqr = this.findDistanceSquared(object.x, object.y, collection[i].x, collection[i].y);
             if (newDistanceSqr < theDistance) {
                 theDistance = newDistanceSqr;
                 nearestObject = collection[i];
@@ -386,11 +398,13 @@ class FishScene extends Phaser.Scene {
 
     findFleeVector(fish, predators) {
         var fleeVector = new Phaser.Math.Vector2();
+        var predatorDistance = 0;
+        var fishFleeVector = 0;
         for (var i = 0; i < predators.length; i++) {
-            var predatorDistance = this.findDistanceSquared(fish.x, fish.y, predators[i].x, predators[i].y);
+            predatorDistance = this.findDistanceSquared(fish.x, fish.y, predators[i].x, predators[i].y);
 
             if (predatorDistance <= Math.pow(fish.fleeDistance + fish.displayWidth / 2 + predators[i].displayWidth / 2,2)) {
-                var fishFleeVector = this.findDirection(fish.x, fish.y, predators[i].x, predators[i].y);
+                fishFleeVector = this.findDirection(fish.x, fish.y, predators[i].x, predators[i].y);
                 fishFleeVector.x *= -1;
                 fishFleeVector.y *= -1;
 
@@ -404,14 +418,17 @@ class FishScene extends Phaser.Scene {
 
     findOtherTypeAvoidanceVector(fish, fishes) {
         var otherTypeVector = new Phaser.Math.Vector2();
+        var otherFishDistance = 0;
+        var fishAvoidVector = 0;
+        var perpendicularVector = 0;
         for (var i = 0; i < fishes.length; i++) {
             if (fish.fishType !== fishes[i].fishType || fish.displayWidth !== fishes[i].displayWidth) {
-                var otherFishDistance = this.findDistanceSquared(fish.x, fish.y, fishes[i].x, fishes[i].y);
+                otherFishDistance = this.findDistanceSquared(fish.x, fish.y, fishes[i].x, fishes[i].y);
                 if (otherFishDistance <= Math.pow(fish.otherTypeAvoidDistance + fish.displayWidth / 2 + fishes[i].displayWidth / 2, 2)) {
-                    var fishAvoidVector = this.findDirection(fish.x, fish.y, fishes[i].x, fishes[i].y);
+                    fishAvoidVector = this.findDirection(fish.x, fish.y, fishes[i].x, fishes[i].y);
                     fishAvoidVector.x *= -1;
                     fishAvoidVector.y *= -1;
-                    var perpendicularVector = new Phaser.Math.Vector2(-fishAvoidVector.y, fishAvoidVector.x);
+                    perpendicularVector = new Phaser.Math.Vector2(-fishAvoidVector.y, fishAvoidVector.x);
 
                     otherTypeVector.x += perpendicularVector.x;
                     otherTypeVector.y += perpendicularVector.y;
@@ -462,11 +479,13 @@ class FishScene extends Phaser.Scene {
     findSeperationVector(fish, fishes) {
         var seperationVector = new Phaser.Math.Vector2();
         var neighborCount = 0;
+        var fishDistance = 0;
+        var fishDirection = 0;
         for (var i = 0; i < fishes.length; i++) {
             if (fish != fishes[i] && fish.displayWidth === fishes[i].displayWidth) {
-                var fishDistance = this.findDistanceSquared(fish.x, fish.y, fishes[i].x, fishes[i].y);
+                fishDistance = this.findDistanceSquared(fish.x, fish.y, fishes[i].x, fishes[i].y);
                 if (fishDistance <= Math.pow(fish.seperationDistance + fish.displayWidth / 2 + fishes[i].displayWidth / 2, 2)) {
-                    var fishDirection = this.findDirection(fish.x, fish.y, fishes[i].x, fishes[i].y);
+                    fishDirection = this.findDirection(fish.x, fish.y, fishes[i].x, fishes[i].y);
                     seperationVector.x += fishDirection.x;
                     seperationVector.y += fishDirection.y;
                     neighborCount++;                    
@@ -524,10 +543,11 @@ class FishScene extends Phaser.Scene {
         var foodSources = [];
         foodSources = foodSources.concat(worms);
         if (this.fishIsBigger(fish, playerFish)) {
-            foodSources.push(playerFish);
+            //foodSources.push(playerFish);
         }
+        var theFish = 0;
         for (var i = 0; i < fishes.length; i++) {
-            var theFish = fishes[i];
+            theFish = fishes[i];
             if (this.fishIsBigger(fish, theFish)) {
                 foodSources.push(theFish);
             }
@@ -541,8 +561,9 @@ class FishScene extends Phaser.Scene {
         if (this.fishIsBigger(playerFish, fish)) {
             predators.push(playerFish);
         }
+        var theFish = 0;
         for (var i = 0; i < fishes.length; i++) {
-            var theFish = fishes[i];
+            theFish = fishes[i];
             if (this.fishIsBigger(theFish, fish)) {
                 predators.push(theFish);
             }
